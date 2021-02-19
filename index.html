@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Power Hour</title>
+        <style>
+
+            .contentContainer {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                align-items: center;
+                justify-items: center;
+            }
+            .stoplightContainer {
+                display: grid;
+                grid-template-rows: 1fr 1fr 1fr;
+                background: rgb(0, 0, 0);
+                width: 275px;
+                height: 650px;
+                padding-left: 50px; 
+                padding-top: 50px;
+
+                -webkit-border-radius: 25px;
+                -moz-border-radius: 25px;
+                border-radius: 25px;
+            }
+
+            .whiteLight {
+                width: 200px;
+                height: 200px;
+                -webkit-border-radius: 100px;
+                -moz-border-radius: 100px;
+                border-radius: 100px;
+                background: rgb(255, 255, 255);
+            }
+
+            .redLight {
+                width: 200px;
+                height: 200px;
+                -webkit-border-radius: 100px;
+                -moz-border-radius: 100px;
+                border-radius: 100px;
+                background: red            
+            }
+
+            .yellowLight {
+                width: 200px;
+                height: 200px;
+                -webkit-border-radius: 100px;
+                -moz-border-radius: 100px;
+                border-radius: 100px;
+                background: yellow;
+            }
+
+            .greenLight {
+                width: 200px;
+                height: 200px;
+                -webkit-border-radius: 100px;
+                -moz-border-radius: 100px;
+                border-radius: 100px;
+                background: green;
+            }
+
+            .hidden {
+                visibility: hidden;
+            }
+
+            .visible {
+                visibility: visible;
+            }
+          
+
+            .buttonContainer {
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                background:rgb(136, 136, 136);
+                outline-width: medium;
+                padding-left: 20px; 
+                padding-top: 20px;
+                padding-right: 20px;
+                padding-bottom: 20px;
+                margin-top: 10px;
+                width: fit-content; 
+            }
+
+            .button {
+                width: 150px;
+                height: 50px;
+            
+                align-self: center;
+            }
+
+        </style>
+    </head>
+
+
+
+    <body>
+        <H1>Power Hour</H1>
+        <H2>Select an intervault. Press start. Drink everytime you see the green light!</H2>
+        
+        
+        <div class="contentContainer">
+            <div class="stoplightContainer">
+                <div class="whiteLight"><div class="redLight" id="redLight"></div></div>
+                <div class="whiteLight"><div class="yellowLight" id="yellowLight"></div></div>
+                <div class="whiteLight"><div class="greenLight" id="greenLight"></div></div>
+            </div>
+
+            <div class="rightScreenContainer">
+                <div><H1><span id="timerMinutes">60</span><span>:</span><span id="timerSeconds">00</span></H1></div>
+                <div id="prompt"><H3>The Power Comes From The Hour</H3></div>
+                <div class="buttonContainer">
+                    <div>
+                        <input type="range" min="0" max="9" value="0" class="slider" id="myRange" onchange="getIntervault()">
+                        <output id="displayedIntervault"  name="number" for="myRange">0</output>
+                    </div>
+                    <button onclick="startPowerHour()" class="button" id="startButton">Start</button>
+                </div>
+            </div> 
+            
+
+        
+
+
+        </div>
+    </body>
+
+
+    <script>
+
+        var capturedIntervault = 0;
+        var slider = document.getElementById("myRange");
+        var displayedIntervault = document.getElementById("displayedIntervault");
+        var vals =[1, 2 ,3 , 4 , 5, 6, 10, 12 , 15, 20];
+
+        var timeSec = 60;
+        var timeMin = 60;
+        var timerTimeoutID = null;
+        var timerMinutes = document.getElementById("timerMinutes")
+        var timerSeconds = document.getElementById("timerSeconds")
+        
+        var promptArray = ["Take a shot of liquor", "Take a sip of your drank", "Shotgun!"]
+        var prompt = document.getElementById("prompt")
+        
+        var startButton = document.getElementById("startButton")
+
+        var redLight = document.getElementById("redLight")
+        var yellowLight = document.getElementById("yellowLight")
+        var greenLight = document.getElementById("greenLight")
+        var whiteLight = document.getElementById("whiteLight")
+
+        var numOfGreenLights = 0
+        var greenLightIntervault = 0
+        var multiplier = 0
+
+
+        function getIntervault() {
+            capturedIntervault = vals[slider.value]
+            displayedIntervault.innerHTML = capturedIntervault
+            console.log(capturedIntervault)
+
+            numOfGreenLights = 60/capturedIntervault
+            intervaultArray = collectIntervaults(numOfGreenLights)
+        }
+
+        function collectIntervaults(size){
+          return Array.from(Array(size), (_, i) => capturedIntervault*i)
+          console.log("CollectInt") // triggers func but no sign in web console??
+        }
+        
+
+        function startPowerHour() {
+            toggleRedLight()
+            toggleYellowLight()
+            setTimeout(function() {toggleYellowLight(), toggleGreenLight()}, 2000) // turn off yellow turn on green light after 2 secs
+            setTimeout(function() {startTimer(), displayPrompt()}, 2000) // start timer and display prompt after 2 sec
+            setTimeout(function() {toggleGreenLight(), toggleRedLight()}, 7000) //turn off green turn on red after 7 secs (aka: 5 secs)
+        }
+
+        function startTimer() {
+            clearInterval(timerTimeoutID)
+            timerTimeoutID = setInterval (updateTime, 1000)
+        }
+
+        function updateTime() {
+            if (timeSec === 0 & timeMin === 0) {
+                console.log("power hour over")
+            } else if (timeSec === 0) {
+                console.log(timeMin)
+                timeSec = 59
+                timerSeconds.innerHTML = timeSec;
+                timeMin -= 1
+                timerMinutes.innerHTML = timeMin
+
+                console.log(timeMin)
+                lightCountDown()
+                
+
+                
+                // checkNeedLightChange()
+            } else if (timeMin === 60) {
+                timeSec = 59
+                timeMin = 59
+                timerSeconds.innerHTML = timeSec
+                timerMinutes.innerHTML = timeMin
+                lightCountDown()
+            } else {
+                timeSec -= 1
+                timerSeconds.innerHTML = timeSec;
+            }
+        }
+        
+
+        function lightCountDown () {
+
+            if (intervaultArray.includes(timeMin)) {
+
+                // turn yellow light on
+                setTimeout(function() {toggleRedLight(), toggleYellowLight()}, 57000)
+                // turn green light on
+                setTimeout(function() {toggleYellowLight(), toggleGreenLight(), displayPrompt()}, 60000)
+                // turn red light back on
+                setTimeout(function() {toggleGreenLight(), toggleRedLight()}, 65000)
+
+                console.log("Drink")
+            } else {
+                console.log("Don't drink")
+            }
+        
+
+        }
+
+        function displayPrompt() {
+            var index = Math.floor(Math.random() * 3);
+            prompt.textContent = promptArray[index]
+        }
+
+        function toggleRedLight() {
+            redLight.classList.toggle("hidden")
+        }
+
+        function toggleYellowLight() {
+            yellowLight.classList.toggle("hidden")
+        }
+
+        function toggleGreenLight() {
+            greenLight.classList.toggle("hidden")
+        }
+
+
+                // function resetLights() {
+        //     toggleRedLight()
+        //     toggleRedLight
+        // }
+
+        // function toggleStartButton() {
+        //     if (startButton.textContent === "Start") {
+        //         startButton.textContent = "Restart"
+        //     } else {
+        //         console.log("Power Hour in session!")
+        //     }
+        // }
+
+                // function checkNeedLightChange() {
+        //     if (timeMin === capturedIntervault) {
+        //         lightCountDown()
+        //     } else {
+        //         console.log("Keep Red Light")
+        //     }
+        // }
+
+        toggleYellowLight()
+        toggleGreenLight()
+
+
+   
+
+    </script>
+</html> 
