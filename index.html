@@ -154,6 +154,11 @@
         var greenLightIntervault = 0
         var multiplier = 0
 
+        var arribaAudio = new Audio('audio/arriba.mp3');
+        var respectTheSipAudio = new Audio('audio/respectTheSip.mp3');
+        var timeCheckAudio = new Audio('audio/timeCheck.mp3');
+    
+
 
         function getIntervault() {
             capturedIntervault = vals[slider.value]
@@ -234,6 +239,16 @@
         function displayPrompt() {
             var index = Math.floor(Math.random() * 3);
             prompt.textContent = promptArray[index]
+
+            if (index === 0) { //take a shot
+                arribaAudio.play()
+            } else if (index === 1) { //take a sip of your drank
+                respectTheSipAudio.play()
+            } else if (index === 2) { //shotgun!
+                timeCheckAudio.play()
+            } else {
+                console.log("Prompt change but could not match audio")
+            }
         }
 
         function toggleRedLight() {
