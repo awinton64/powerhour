@@ -10,6 +10,7 @@
                 grid-template-columns: 1fr 1fr;
                 align-items: center;
                 justify-items: center;
+                padding-top: 30px;
             }
             .stoplightContainer {
                 display: grid;
@@ -90,15 +91,36 @@
                 align-self: center;
             }
 
+            #collen {
+                font-size: 200px;
+                font-weight: bold;
+            } #timerMinutes {
+                font-size: 200px;
+                font-weight: bold;
+            } #timerSeconds {
+                font-size: 200px;
+                font-weight: bold;
+            }
+            #prompt {
+                font-size: 50px;
+                font-weight: bold;
+            } 
+            #title {
+                font-size: 50px;
+                font-weight: bold;
+                padding-left: 20px;
+            } 
+
+            
+
+            
+
         </style>
     </head>
 
 
 
     <body>
-        <H1>Power Hour</H1>
-        <H2>Select an intervault. Press start. Drink everytime you see the green light!</H2>
-        
         
         <div class="contentContainer">
             <div class="stoplightContainer">
@@ -108,9 +130,11 @@
             </div>
 
             <div class="rightScreenContainer">
-                <div><H1><span id="timerMinutes">60</span><span>:</span><span id="timerSeconds">00</span></H1></div>
-                <div id="prompt"><H3>The Power Comes From The Hour</H3></div>
+                <div id="title">Power Hour</div>
+                <div><span id="timerMinutes">60</span><span id="collen">:</span><span id="timerSeconds">00</span></div>
+                <div id="prompt">The Power Comes From The Hour</div>
                 <div class="buttonContainer">
+                    <div id="intructions">Select an intervault. Press start. Drink everytime you see the green light!</div>
                     <div>
                         <input type="range" min="0" max="9" value="0" class="slider" id="myRange" onchange="getIntervault()">
                         <output id="displayedIntervault"  name="number" for="myRange">0</output>
